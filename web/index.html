@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <title> Access Point Configuration </title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .input-group {
+            padding: 5px;
+        }
+
+        .button-group {
+            padding: 5px;
+        }
+
+        button {
+            font-family: inherit;
+            padding: 5px;
+            width: 100px;
+            border: solid 1px gray;
+            border-radius: 10px;
+        }
+
+        input {
+            font-family: inherit;
+            border: solid 1px gray;
+            border-radius: 10px;
+            width: 300px;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body align='center'>
+    <div class='input-group'><label> SSID: </label><input id='ssid'></div>
+    <div class='input-group'><label> PASS: </label><input id='pass'></div>
+    <div class='button-group'>
+        <button id='reloadButton'> Reload </button>
+        <button id='submitButton'> Submit </button>
+    </div>
+    <script>
+        document.getElementById('reloadButton').onclick = function () {
+            console.log('reload button is clicked...');
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+                    if (xmlHttp.status == 200) { /* success */
+                        var res = JSON.parse(xmlHttp.responseText);
+                        console.log(res);
+                        document.getElementById('ssid').value = res.ssid;
+                        document.getElementById('pass').value = res.pass;
+                    }
+                    else { /* fail */
+                        alert('loading fail');
+                    }
+                }
+            };
+            xmlHttp.open('GET', '/ap');
+            xmlHttp.send();
+        };
+        document.getElementById('submitButton').onclick = function () {
+            console.log('submit button is clinked...');
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+                    if (xmlHttp.status == 200) { /* success */
+                        alert('success')
+                    }
+                    else { /* fail */
+                        alert('fail');
+                    }
+                }
+            };
+
+            var data = JSON.stringify({
+                ssid: document.getElementById('ssid').value,
+                pass: document.getElementById('pass').value
+            });
+            xmlHttp.open('POST', '/ap');
+            xmlHttp.send(data);
+        };
+        document.getElementById('reloadButton').click();
+    </script>
+</body>
+
+</html>
